@@ -1,4 +1,4 @@
-# AT2-Major-Project
+# Test branch
 Major Project is to develop a Graphical Hangman Game using pygame
 
 ## Overview
