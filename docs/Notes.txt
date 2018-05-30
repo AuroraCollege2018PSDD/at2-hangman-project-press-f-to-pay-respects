@@ -1,0 +1,16 @@
+Customers requests:
+
+* simple graphical game
+
+* all the letters down the bottom
+
+* move the letters up on the line when choosing the letter
+
+* getting it wrong, it will be placed in bin 
+
+* count of how many guesses you have
+
+* graphical representation of the hang man being hung
+
+
+
