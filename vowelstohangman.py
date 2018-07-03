@@ -1,7 +1,7 @@
 #dependencies
 import pygame as P # accesses pygame files
 import sys  # to communicate with windows
-
+import time as T #time function for sleeping etc
 
 # pygame setup - only runs once
 P.init()  # starts the game engine
@@ -60,6 +60,7 @@ class renderedLetter(object):
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 wordlist = "hummingbird" #kiwi, chicken, crow, stork, pigeon, swan, duck, peacock, parrot, sparrow, toucan, penguin, owl, hummingbird, seagull, ibis, emu, kingfisher, kookaburra, dove, conary, puffin, albatross, eagle.
 lose = "You lose!!"
+victory = "You win!!"
 
 #create arrays to display the rendered letters
 alphabetArray = [] #an initially empty array
@@ -76,6 +77,11 @@ loseArray = [] #an initially empty array
 for letter in lose:
     rLetter = renderedLetter(letter)
     loseArray.append(rLetter)
+
+victoryArray = [] #an initially empty array
+for letter in victory:
+    rLetter = renderedLetter(letter)
+    victoryArray.append(rLetter)
 
 #draw alphabet letters on the screen
 xPosition = 10 #across
@@ -103,9 +109,10 @@ for l in wordlistArray:
 
 
 #everytihng up to here was setting up - now lets play
-
+win = True
 play = True  # controls whether to keep playing
 guessesRemaining = 10
+correctGuesses = 0
 # game loop - runs 'loopRate' times a second!
 while play:  # game loop - note:  everything in this loop is indented one tab
 
@@ -119,7 +126,10 @@ while play:  # game loop - note:  everything in this loop is indented one tab
             #need to check all letters to see if they clicked on that letter
             for a in alphabetArray:
                 if a.rectangle.collidepoint(mousePosition): #is the mouse click inside the letters rectangle
+                    guessCorrect = False
                     a.color = red
+                    #take the guessed letter out of the arraycso it cannot be selected twice
+                    alphabetArray.remove(a)
                     #a.update()
                     for v in wordlistArray: #check whether that letter is in the wordlist
                         if a.text == v.text: #compare text of clicked letter to the word's text
@@ -128,35 +138,61 @@ while play:  # game loop - note:  everything in this loop is indented one tab
                             v.update() #made changes so we need to update
                             screen.blit(v.renderedText, v.rectangle) #need to re-blit
                             guessCorrect = True #so it doesn't count as a loss of a guess
+                            correctGuesses += 1
+                            if correctGuesses == len(wordlist): #see if word is guessed
+                                guessesRemaining = 0
                     a.update() #made changes so we need to update
                     screen.blit(a.renderedText, a.rectangle) #need to re-blit
                 
                     if guessCorrect == False: #to allow a guessing system
                         #update image
                         guessesRemaining -= 1
-                        pass
-                                                            
+                        if guessRemaining == 0:
+                            win = False
+                        
+                     
+                
+                        
         if guessesRemaining == 0: #allows guessing system to end the game once all guesses are used up
-            screen.fill(purple)
-            for o in loseArray:
-                o.x = xPosition
-                o.y = yPosition
-                o.color = blue
-                o.backColor = purple
-                o.update()
-                screen.blit(o.renderedText,o.rectangle)
-                xPosition += (o.rectangle.width + 10)
-                #flash you lose
-                P.quit()
-                pass
-            
-
-      
+            if win == False:
+                screen.fill(purple)
+                xPosition = 10
+                for o in loseArray:
+                    o.x = xPosition
+                    o.y = yPosition
+                    o.color = blue
+                    o.backColor = purple
+                    o.size = DEFAULT_TEXT_SIZE
+                    o.update()
+                    screen.blit(o.renderedText,o.rectangle)
+                    xPosition += (o.rectangle.width + 10)
+                    #flash you lose
+            else:
+                #you win
+                print('you win, that lies')
+                screen.fill(purple)
+                xPosition = 10
+                for p in victoryArray:
+                    print(p.text)
+                    p.x = xPosition
+                    p.y = yPosition
+                    p.color = blue
+                    p.backColor = purple
+                    p.size = DEFAULT_TEXT_SIZE
+                    p.update()
+                    screen.blit(p.renderedText,p.rectangle)
+                    xPosition += (p.rectangle.width + 10)
+                    play = False
+                    win = False
+                            
 
     # your code ends here ###############################
     P.display.flip()  # makes any changes visible on the screen
     clock.tick(loopRate)  # limits game to frame per second, FPS value
-
+    if win == False:
+        T.sleep(5)
+    
 # out of game loop ###############
+
 P.quit()   # stops the game engine
 sys.exit()  # close operating system window
