@@ -60,7 +60,7 @@ class renderedLetter(object):
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 wordlist = "hummingbird" #kiwi, chicken, crow, stork, pigeon, swan, duck, peacock, parrot, sparrow, toucan, penguin, owl, hummingbird, seagull, ibis, emu, kingfisher, kookaburra, dove, conary, puffin, albatross, eagle.
 lose = "You lose!!"
-victory = "You win!!"
+winText = "You win!!"
 
 #create arrays to display the rendered letters
 alphabetArray = [] #an initially empty array
@@ -78,10 +78,10 @@ for letter in lose:
     rLetter = renderedLetter(letter)
     loseArray.append(rLetter)
 
-victoryArray = [] #an initially empty array
-for letter in victory:
+winArray = [] #an initially empty array
+for letter in winText:
     rLetter = renderedLetter(letter)
-    victoryArray.append(rLetter)
+    winArray.append(rLetter)
 
 #draw alphabet letters on the screen
 xPosition = 10 #across
@@ -141,6 +141,7 @@ while play:  # game loop - note:  everything in this loop is indented one tab
                             correctGuesses += 1
                             if correctGuesses == len(wordlist): #see if word is guessed
                                 guessesRemaining = 0
+                                win = True
                     a.update() #made changes so we need to update
                     screen.blit(a.renderedText, a.rectangle) #need to re-blit
                 
@@ -162,34 +163,32 @@ while play:  # game loop - note:  everything in this loop is indented one tab
                     o.y = yPosition
                     o.color = blue
                     o.backColor = purple
-                    o.size = DEFAULT_TEXT_SIZE
+                    o.size = DEFAULT_TEXT_SIZE *2
                     o.update()
                     screen.blit(o.renderedText,o.rectangle)
                     xPosition += (o.rectangle.width + 10)
                     #flash you lose
             else:
-                #you win
-                print('you win, that lies')
+                #flash you win
                 screen.fill(purple)
                 xPosition = 10
-                for p in victoryArray:
-                    print(p.text)
-                    p.x = xPosition
-                    p.y = yPosition
-                    p.color = blue
-                    p.backColor = purple
-                    p.size = DEFAULT_TEXT_SIZE
-                    p.update()
-                    screen.blit(p.renderedText,p.rectangle)
-                    xPosition += (p.rectangle.width + 10)
+                for o in winArray:
+                    o.x = xPosition
+                    o.y = yPosition
+                    o.color = blue
+                    o.backColor = purple
+                    o.size = DEFAULT_TEXT_SIZE *2
+                    o.update()
+                    screen.blit(o.renderedText,o.rectangle)
+                    xPosition += (o.rectangle.width + 10)
                     play = False
-                    win = False
+                    
                             
 
     # your code ends here ###############################
     P.display.flip()  # makes any changes visible on the screen
     clock.tick(loopRate)  # limits game to frame per second, FPS value
-    if win == False:
+    if guessesRemaining == 0:
         T.sleep(5)
     
 # out of game loop ###############
